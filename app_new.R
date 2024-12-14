@@ -35,37 +35,24 @@ my_theme <- bs_theme(
 # UI
 ui <- tagList(
   tags$head(
-    # CSS to make the logos stay in the top corners
+    # CSS to style the title and logo alignment
     tags$style(HTML("
-      .logo-container-left {
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        z-index: 9999;
+      .navbar-brand {
+        display: flex;
+        align-items: center;
       }
-      .logo-container-right {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        z-index: 9999;
+      .navbar-brand img {
+        margin-right: 10px; /* Space between logo and title */
+        height: 40px; /* Adjust height of logo */
       }
     "))
   ),
   
-  # Top-left logo
-  div(
-    class = "logo-container-left",
-    img(src = "QB_Tool.png", height = "50px", alt = "Logo Left") # Adjusted size for top-left logo
-  ),
-  
-  # Top-right logo
-  div(
-    class = "logo-container-right",
-    img(src = "QB_Tool2.png", height = "50px", alt = "Logo Right") # Adjusted size for top-right logo
-  ),
-  
   navbarPage(
-    title = "NFL QB Predictor",
+    title = div(
+      tags$img(src = "QB_Tool.png", alt = "Logo", height = "40px"), # Insert logo next to title
+      "NFL QB Predictor"
+    ),
     theme = my_theme,
     
     # Landing Page
@@ -219,29 +206,30 @@ server <- function(input, output) {
         headshot_url = colDef(
           name = "Headshot",
           cell = function(value) {
-            img(src = value, height = "60px", style = "border-radius: 50%;") # Enlarged image
+            img(src = value, height = "70px", style = "border-radius: 50%;")
           },
           html = TRUE,
-          filterable = FALSE # Images are not filterable
+          filterable = FALSE,
+          minWidth = 110
         ),
-        player_name = colDef(name = "Name", filterable = TRUE),
-        team = colDef(name = "Team", filterable = TRUE),
-        opponent = colDef(name = "Opponent", filterable = TRUE),
-        pred_pass_attempts = colDef(name = "Proj Pass Attempts", filterable = TRUE),
-        pred_completions = colDef(name = "Proj Completions", filterable = TRUE),
-        pred_passing_yards = colDef(name = "Proj Passing Yards", filterable = TRUE),
-        pred_passing_tds = colDef(name = "Proj Passing TDs", filterable = TRUE),
-        pred_interceptions = colDef(name = "Proj INTs", filterable = TRUE),
-        pred_rush_attempts = colDef(name = "Proj Rush Attempts", filterable = TRUE),
-        pred_rushing_yards = colDef(name = "Proj Rushing Yards", filterable = TRUE),
-        pred_rushing_tds = colDef(name = "Proj Rushing TDs", filterable = TRUE)
+        player_name = colDef(name = "Name", filterable = TRUE, minWidth = 120),
+        team = colDef(name = "Team", filterable = TRUE, minWidth = 100),
+        opponent = colDef(name = "Opponent", filterable = TRUE, minWidth = 110),
+        pred_pass_attempts = colDef(name = "Proj Pass Attempts", filterable = TRUE, minWidth = 110),
+        pred_completions = colDef(name = "Proj CMP", filterable = TRUE, minWidth = 100),  # Changed name here
+        pred_passing_yards = colDef(name = "Proj Passing Yards", filterable = TRUE, minWidth = 110),
+        pred_passing_tds = colDef(name = "Proj Passing TDs", filterable = TRUE, minWidth = 110),
+        pred_interceptions = colDef(name = "Proj INTs", filterable = TRUE, minWidth = 100),
+        pred_rush_attempts = colDef(name = "Proj Rush Attempts", filterable = TRUE, minWidth = 110),
+        pred_rushing_yards = colDef(name = "Proj Rushing Yards", filterable = TRUE, minWidth = 110),
+        pred_rushing_tds = colDef(name = "Proj Rushing TDs", filterable = TRUE, minWidth = 110)
       ),
       searchable = TRUE,
       striped = TRUE,
       highlight = TRUE,
       borderless = TRUE,
-      defaultPageSize = nrow(qb_data), # Show all rows
-      pagination = FALSE
+      defaultPageSize = 5, # Show all rows
+      pagination = TRUE
     )
   })
   
